@@ -14,7 +14,7 @@ module ChromeRemote
 
     def send_cmd(command, params = {})
       msg_id = generate_unique_id
-      payload = {method: command, params: params, id: msg_id}.to_json
+      payload = Oj.to_json({method: command, params: params, id: msg_id})
 
       logger.info "SEND ► #{payload}"
       ws.send_msg(payload)
@@ -53,7 +53,7 @@ module ChromeRemote
     def read_msg
       msg = ws.read_msg
       logger.info "◀ RECV #{msg}"
-      msg = JSON.parse(msg)
+      msg = Oj.load(msg)
 
       # Check if it’s an event and invoke any handlers
       if event_name = msg["method"]

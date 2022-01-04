@@ -1,6 +1,6 @@
 require "chrome_remote/version"
 require "chrome_remote/client"
-require "json"
+require "oj"
 require "net/http"
 
 module ChromeRemote
@@ -26,7 +26,7 @@ module ChromeRemote
       path += '/new?about:blank'  if options.key?(:new_tab)
 
       response = Net::HTTP.get(options[:host], path, options[:port])
-      response = JSON.parse(response)
+      response = Oj.load(response)
 
       raise ChromeConnectionError unless response.any?
 
